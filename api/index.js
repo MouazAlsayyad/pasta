@@ -1,26 +1,31 @@
 import express from 'express';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { kv } from '@vercel/kv';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 app.use(express.json());
-app.use(express.static(join(__dirname, '..')));
 
-app.get('/log', (_req, res) => {
-  res.sendFile(join(__dirname, '..', 'log.html'));
-});
+async function getPlayers() {
+  return (await kv.get('players')) || [];
+}
 
 app.get('/api/players', async (_req, res) => {
-  const players = await kv.get('players') || [];
-  res.json(players);
+  try {
+    res.json(await getPlayers());
+  } catch (err) {
+    console.error('GET /api/players failed:', err);
+    res.status(500).json({ error: 'Failed to load players' });
+  }
 });
 
 app.get('/api/top10', async (_req, res) => {
-  const players = await kv.get('players') || [];
-  res.json(players.slice(0, 10));
+  try {
+    const players = await getPlayers();
+    res.json(players.slice(0, 10));
+  } catch (err) {
+    console.error('GET /api/top10 failed:', err);
+    res.status(500).json({ error: 'Failed to load top 10' });
+  }
 });
 
 app.post('/api/score', async (req, res) => {
@@ -28,15 +33,21 @@ app.post('/api/score', async (req, res) => {
   if (typeof score !== 'number') {
     return res.status(400).json({ error: 'score must be a number' });
   }
-  const players = await kv.get('players') || [];
-  players.push({
-    name: name || 'Player',
-    score,
-    date: date || new Date().toISOString(),
-  });
-  players.sort((a, b) => b.score - a.score);
-  await kv.set('players', players);
-  res.json(players);
+
+  try {
+    const players = await getPlayers();
+    players.push({
+      name: name || 'Player',
+      score,
+      date: date || new Date().toISOString(),
+    });
+    players.sort((a, b) => b.score - a.score);
+    await kv.set('players', players);
+    res.json(players);
+  } catch (err) {
+    console.error('POST /api/score failed:', err);
+    res.status(500).json({ error: 'Failed to save score' });
+  }
 });
 
 export default app;
