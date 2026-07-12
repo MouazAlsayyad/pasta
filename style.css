@@ -357,8 +357,8 @@ body {
 /* --- Speech Bubble --- */
 .speech-bubble {
   position: fixed;
-  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) + 12px);
-  left: max(12px, calc(clamp(80px, 18vh, 180px) * var(--chef-scale) * 0.3));
+  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) + 0.05px);
+  left: max(12px, calc(clamp(80px, 18vh, 180px) * var(--chef-scale) * 0.9));
   z-index: var(--z-bubble);
   opacity: 0;
   transform: translateY(6px);
@@ -437,7 +437,7 @@ body {
   --z-chef: 20;
   --z-bubble: 25;
   --fork-scale: 1.35;
-  --chef-scale: 1;
+  --chef-scale: 2;
 }
 
 /* --- Brand palette --- */
