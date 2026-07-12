@@ -1,12 +1,35 @@
 import express from 'express';
-import { kv } from '@vercel/kv';
+import { createClient } from 'redis';
 
 const app = express();
+const PLAYERS_KEY = 'players';
 
 app.use(express.json());
 
+let redisClient;
+
+async function getClient() {
+  if (!redisClient) {
+    const url = process.env.REDIS_URL;
+    if (!url) {
+      throw new Error('REDIS_URL is not configured');
+    }
+    redisClient = createClient({ url });
+    redisClient.on('error', (err) => console.error('Redis client error:', err));
+    await redisClient.connect();
+  }
+  return redisClient;
+}
+
 async function getPlayers() {
-  return (await kv.get('players')) || [];
+  const client = await getClient();
+  const raw = await client.get(PLAYERS_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+async function setPlayers(players) {
+  const client = await getClient();
+  await client.set(PLAYERS_KEY, JSON.stringify(players));
 }
 
 app.get('/api/players', async (_req, res) => {
@@ -42,7 +65,7 @@ app.post('/api/score', async (req, res) => {
       date: date || new Date().toISOString(),
     });
     players.sort((a, b) => b.score - a.score);
-    await kv.set('players', players);
+    await setPlayers(players);
     res.json(players);
   } catch (err) {
     console.error('POST /api/score failed:', err);

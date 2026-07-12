@@ -12,10 +12,10 @@ if (!existsSync(DATA_FILE)) writeFileSync(DATA_FILE, '[]', 'utf-8');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(join(__dirname, 'public')));
 
 app.get('/log', (_req, res) => {
-  res.sendFile(join(__dirname, 'log.html'));
+  res.sendFile(join(__dirname, 'public', 'log.html'));
 });
 
 function readPlayers() {
