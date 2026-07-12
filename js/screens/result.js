@@ -28,17 +28,18 @@ export function createResultScreen(gameManager) {
       scoreLabel.textContent = score;
       nameInput.value = '';
 
-      const scores = lb.getScores();
-      const topScore = scores[0]?.score || 0;
-      if (score > topScore) {
-        dm.show('new_high_score');
-      } else if (scores.length < 10 || score > scores[scores.length - 1].score) {
-        dm.show('leaderboard_entry');
-      }
+      lb.getTop10().then(scores => {
+        const topScore = scores[0]?.score || 0;
+        if (currentScore > topScore) {
+          dm.show('new_high_score');
+        } else if (scores.length < 10 || currentScore > scores[scores.length - 1].score) {
+          dm.show('leaderboard_entry');
+        }
+      });
 
       autoTimer = setTimeout(() => {
         if (!saved) {
-          lb.addScore(nameInput.value || 'Player', currentScore);
+          lb.addPlayer(nameInput.value || 'Player', currentScore);
           saved = true;
         }
         gameManager.showScreen('attract');
@@ -46,7 +47,7 @@ export function createResultScreen(gameManager) {
 
       saveBtn.onclick = () => {
         if (saved) return;
-        lb.addScore(nameInput.value || 'Player', currentScore);
+        lb.addPlayer(nameInput.value || 'Player', currentScore);
         saved = true;
       };
 

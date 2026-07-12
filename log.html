@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سجل اللاعبين</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      overflow: auto;
+      user-select: text;
+      -webkit-user-select: text;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      min-height: 100dvh;
+      gap: 1.5rem;
+    }
+
+    .top-logo {
+      position: static;
+      pointer-events: auto;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      min-width: 140px;
+    }
+
+    .stat-card .num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .table-wrap {
+      width: 100%;
+      max-width: 800px;
+      overflow-x: auto;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      padding: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: inherit;
+      color: #fff;
+    }
+
+    th {
+      text-align: start;
+      padding: 0.75rem 0.5rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.85rem;
+    }
+
+    td {
+      padding: 0.65rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rank {
+      color: rgba(255, 255, 255, 0.5);
+      width: 2rem;
+      text-align: center;
+    }
+
+    .score-cell {
+      direction: ltr;
+      text-align: start;
+    }
+
+    .empty-msg {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--color-primary, #fff);
+      color: #fff;
+      transition: transform 160ms ease-out, filter 200ms ease-out;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .btn:hover { filter: brightness(1.1); }
+      .btn-outline:hover { background: rgba(255, 255, 255, 0.25); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 300ms ease-out;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <img src="assets/Logo.png" alt="Logo" class="top-logo">
+
+  <h1>سجل اللاعبين</h1>
+
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="num" id="totalPlayers">0</div>
+      <div class="label">إجمالي اللاعبين</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="topScore">0</div>
+      <div class="label">أعلى نقاط</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="avgScore">0</div>
+      <div class="label">متوسط النقاط</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" id="downloadAll">تنزيل players.json</button>
+    <button class="btn btn-outline" id="downloadTop10">تنزيل top10.json</button>
+    <button class="btn btn-outline" id="refreshBtn">تحديث</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="rank">#</th>
+          <th>الاسم</th>
+          <th>النقاط</th>
+          <th>تاريخ اللعب</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    function getPlayers() {
+      return fetch('/api/players').then(r => r.json()).catch(() => []);
+    }
+
+    function getTop10() {
+      return fetch('/api/top10').then(r => r.json()).catch(() => []);
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      const opts = { year: 'numeric', month: '2-digit', day: '2-digit',
+                     hour: '2-digit', minute: '2-digit', hour12: false };
+      return d.toLocaleDateString('ar-SA', opts);
+    }
+
+    function render() {
+      getPlayers().then(players => {
+        const total = players.length;
+
+        document.getElementById('totalPlayers').textContent = total;
+        document.getElementById('topScore').textContent = total > 0 ? players[0].score : 0;
+        document.getElementById('avgScore').textContent = total > 0
+          ? Math.round(players.reduce((s, p) => s + p.score, 0) / total)
+          : 0;
+
+        const tbody = document.getElementById('tbody');
+
+        if (total === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="empty-msg">لا يوجد لاعبين بعد</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = players.map((p, i) => `
+          <tr>
+            <td class="rank">${i + 1}</td>
+            <td>${escapeHtml(p.name)}</td>
+            <td class="score-cell">${p.score}</td>
+            <td>${formatDate(p.date)}</td>
+          </tr>
+        `).join('');
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function downloadJSON(filename, obj) {
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`تم تنزيل ${filename}`);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    document.getElementById('downloadAll').addEventListener('click', () => {
+      getPlayers().then(players => {
+        if (players.length === 0) { showToast('لا يوجد لاعبين بعد'); return; }
+        downloadJSON('players.json', players);
+      });
+    });
+
+    document.getElementById('downloadTop10').addEventListener('click', () => {
+      getTop10().then(players => {
+        if (players.length === 0) { showToast('لا يوجد لاعبين بعد'); return; }
+        downloadJSON('top10.json', players);
+      });
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', render);
+
+    render();
+  </script>
+</body>
+</html>

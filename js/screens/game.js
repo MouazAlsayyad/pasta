@@ -32,18 +32,19 @@ export function createGameScreen(gameManager) {
       dm = new DialogueManager(bubbleEl, textEl);
 
       const lb = new LeaderboardManager();
-      const scores = lb.getScores();
       const ROW_TOPS = [12.36, 20.77, 29.18, 37.60, 45.93, 54.34, 62.49, 70.82, 78.61, 86.94];
-      lbRows.innerHTML = ROW_TOPS.map((top, i) => {
-        const entry = scores[i];
-        if (!entry) return '';
-        const name = document.createElement('div');
-        name.textContent = entry.name;
-        return `<div class="lb-row" style="top:${top}%;animation-delay:${i * 50}ms">
-          <span class="lb-name">${name.innerHTML}</span>
-          <span class="lb-score">${entry.score}</span>
-        </div>`;
-      }).join('');
+      lb.getTop10().then(scores => {
+        lbRows.innerHTML = ROW_TOPS.map((top, i) => {
+          const entry = scores[i];
+          if (!entry) return '';
+          const name = document.createElement('div');
+          name.textContent = entry.name;
+          return `<div class="lb-row" style="top:${top}%;animation-delay:${i * 50}ms">
+            <span class="lb-name">${name.innerHTML}</span>
+            <span class="lb-score">${entry.score}</span>
+          </div>`;
+        }).join('');
+      });
 
       scoreSystem = new ScoreSystem();
       scoreSystem.reset();
