@@ -99,21 +99,21 @@ body {
 
 #fork {
   touch-action: none;
+  position: absolute;
+
+  left: 50%;
+  top: 20%;
+  transform: translateX(-50%);
+
   width: calc(min(65vw, 440px) * var(--fork-scale));
   height: calc(min(65vw, 440px) * var(--fork-scale));
-  position: relative;
-  /* position: fixed;
-  bottom: 1rem;*/
-  left: 47%;
-  top:20%;
-  transform: translateX(-50%); 
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   cursor: grab;
-  flex-shrink: 0;
   z-index: 999;
-  margin-top: 2.5rem;
 }
 
 #fork:active {
@@ -246,10 +246,13 @@ body {
 .coil-guide {
   position: fixed;
   top: 50%;
-  left: 50%;
+  left: 45.5%;
   transform: translate(-50%, -50%);
-  width: min(80vw, 520px);
+
+  width: min(95vw, 900px);
+  max-width: 100%;
   height: auto;
+
   pointer-events: none;
   z-index: 5;
   opacity: 0.35;
@@ -369,8 +372,8 @@ body {
 /* --- Speech Bubble --- */
 .speech-bubble {
   position: fixed;
-  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) + 0.05px);
-  left: max(12px, calc(clamp(80px, 18vh, 180px) * var(--chef-scale) * 0.9));
+  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) - 120px);
+  left: max(12px, calc(clamp(80px, 18vh, 180px) * var(--chef-scale) * 0.6));
   z-index: var(--z-bubble);
   opacity: 0;
   transform: translateY(6px);
