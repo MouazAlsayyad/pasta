@@ -8,7 +8,7 @@ export function createGameScreen(gameManager) {
   const scoreLabel = document.querySelector('#screen-game .score-value');
   const timerLabel = document.querySelector('#screen-game .timer-value');
 
-  const leaderboardList = document.querySelector('#screen-game .leaderboard-list');
+  const lbRows = document.querySelector('#screen-game .lb-rows');
 
   let fork;
   let scoreSystem;
@@ -18,9 +18,17 @@ export function createGameScreen(gameManager) {
     onShow() {
       const lb = new LeaderboardManager();
       const scores = lb.getScores();
-      leaderboardList.innerHTML = scores.map((s, i) =>
-        `<li>${i + 1}. ${s.name} — ${s.score}</li>`
-      ).join('');
+      const ROW_TOPS = [12.36, 20.77, 29.18, 37.60, 45.93, 54.34, 62.49, 70.82, 78.61, 86.94];
+      lbRows.innerHTML = ROW_TOPS.map((top, i) => {
+        const entry = scores[i];
+        if (!entry) return '';
+        const name = document.createElement('div');
+        name.textContent = entry.name;
+        return `<div class="lb-row" style="top:${top}%;animation-delay:${i * 50}ms">
+          <span class="lb-name">${name.innerHTML}</span>
+          <span class="lb-score">${entry.score}</span>
+        </div>`;
+      }).join('');
 
       scoreSystem = new ScoreSystem();
       scoreSystem.reset();
