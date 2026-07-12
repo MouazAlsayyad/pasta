@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>لف أكثر! — Laf Akthar!</title>
+  <!--
+    Kiosk Launch Flags (Chrome/Edge):
+    --kiosk --noerrdialogs --disable-pinch
+    --kiosk       → true fullscreen (Esc-proof); Fullscreen API alone can be exited
+    --noerrdialogs → suppress JS error dialogs on crash
+    --disable-pinch → extra guard against pinch-zoom
+  -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -18,12 +25,6 @@
   <section id="screen-countdown" class="screen hidden">
     <span class="countdown-number">3</span>
   </section>
-
-  <div id="debug-overlay" class="debug-overlay">
-    <span>Wraps: <span id="debug-wraps">0</span></span>
-    <span>Fill: <span id="debug-fill">0</span></span>
-    <span>ω: <span id="debug-omega">0.00</span> rad/s</span>
-  </div>
 
   <section id="screen-game" class="screen hidden">
     <img src="assets/chef.png" alt="" class="chef">

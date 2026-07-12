@@ -1,42 +1,50 @@
 import { Fork } from '../fork.js';
+import { ScoreSystem } from '../scoreSystem.js';
+import { LeaderboardManager } from '../leaderboardManager.js';
 
 export function createGameScreen(gameManager) {
   const forkEl = document.getElementById('fork');
   const forkImg = document.getElementById('fork-img');
   const scoreLabel = document.querySelector('#screen-game .score-value');
+  const timerLabel = document.querySelector('#screen-game .timer-value');
 
-  const debugWraps = document.getElementById('debug-wraps');
-  const debugFill = document.getElementById('debug-fill');
-  const debugOmega = document.getElementById('debug-omega');
+  const leaderboardList = document.querySelector('#screen-game .leaderboard-list');
 
   let fork;
-  let score = 0;
-  let rafId = null;
-
-  function updateDebug() {
-    if (!fork) return;
-    debugWraps.textContent = fork.wrapCount;
-    debugFill.textContent = fork.fillState;
-    debugOmega.textContent = fork.angularVelocity.toFixed(2);
-    rafId = requestAnimationFrame(updateDebug);
-  }
+  let scoreSystem;
+  let timerInterval = null;
 
   return {
     onShow() {
-      score = 0;
+      const lb = new LeaderboardManager();
+      const scores = lb.getScores();
+      leaderboardList.innerHTML = scores.map((s, i) =>
+        `<li>${i + 1}. ${s.name} — ${s.score}</li>`
+      ).join('');
+
+      scoreSystem = new ScoreSystem();
+      scoreSystem.reset();
       scoreLabel.textContent = '0';
       forkImg.src = 'assets/fork_fill_0.png';
 
+      let timeLeft = 10;
+      timerLabel.textContent = timeLeft;
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        timerLabel.textContent = Math.ceil(timeLeft);
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          gameManager.showScreen('result', scoreSystem.score);
+        }
+      }, 100);
+
       fork = new Fork(forkEl);
       fork.onWrapCompleted = (scored) => {
-        if (scored) {
-          score += 1;
-          scoreLabel.textContent = score;
-        }
+        if (scored) scoreLabel.textContent = scoreSystem.incrementSpeed();
       };
       fork.onUnwrapOccurred = () => {
-        score = Math.max(0, score - 1);
-        scoreLabel.textContent = score;
+        scoreLabel.textContent = scoreSystem.decrementScore();
       };
       fork.onFillStateChanged = (state) => {
         forkImg.src = `assets/fork_fill_${state}.png`;
@@ -44,12 +52,12 @@ export function createGameScreen(gameManager) {
         void forkImg.offsetWidth;
         forkImg.classList.add('punch');
       };
-
-      rafId = requestAnimationFrame(updateDebug);
     },
     onHide() {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = null;
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
     }
   };
 }

@@ -54,6 +54,7 @@ body {
 
 /* --- Game Screen --- */
 #screen-game {
+  touch-action: none;
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
@@ -288,25 +289,6 @@ body {
 :root {
   --z-screen: 10;
   --z-chef: 20;
-  --z-debug: 100;
-}
-
-/* --- Debug Overlay (REMOVE BEFORE DEMO — Phase 8.1) --- */
-.debug-overlay {
-  position: fixed;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: var(--z-debug);
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.4rem 0.6rem;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 6px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.7rem;
-  color: #0f0;
-  pointer-events: none;
 }
 
 /* --- Brand palette --- */
