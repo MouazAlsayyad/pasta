@@ -1,3 +1,14 @@
+function normalizeAngleDelta(delta) {
+  delta = delta % (2 * Math.PI);
+  if (delta > Math.PI) delta -= 2 * Math.PI;
+  if (delta <= -Math.PI) delta += 2 * Math.PI;
+  return delta;
+}
+
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
 export class Fork {
   constructor(element) {
     this.el = element;
@@ -25,9 +36,8 @@ export class Fork {
   }
 
   _angleFromEvent(e) {
-    const rect = this.el.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
     return Math.atan2(e.clientY - cy, e.clientX - cx);
   }
 
@@ -54,20 +64,25 @@ export class Fork {
     this.previousTimeMs = currentTimeMs;
     if (dt <= 0) return;
 
-    let deltaAngle = currentAngle - this.previousAngle;
-    deltaAngle = Math.atan2(Math.sin(deltaAngle), Math.cos(deltaAngle));
+    const deltaAngle = normalizeAngleDelta(currentAngle - this.previousAngle);
     this.previousAngle = currentAngle;
 
     this.angularVelocity = deltaAngle / dt;
-    this.accumulatedAngle += deltaAngle;
 
-    const TAU = Math.PI * 2;
-    if (this.accumulatedAngle >= TAU) {
-      this.accumulatedAngle -= TAU;
-      this._completeWrap(this.angularVelocity >= this.minSpeed);
-    } else if (this.accumulatedAngle <= -TAU) {
-      this.accumulatedAngle += TAU;
-      this._completeUnwrap();
+    const TAU = 2 * Math.PI;
+    const prevWraps = Math.trunc(this.accumulatedAngle / TAU);
+    this.accumulatedAngle += deltaAngle;
+    const currWraps = Math.trunc(this.accumulatedAngle / TAU);
+
+    const wrapDelta = currWraps - prevWraps;
+    if (wrapDelta > 0) {
+      for (let i = 0; i < wrapDelta; i++) {
+        this._completeWrap(this.angularVelocity >= this.minSpeed);
+      }
+    } else if (wrapDelta < 0) {
+      for (let i = 0; i < -wrapDelta; i++) {
+        this._completeUnwrap();
+      }
     }
   }
 

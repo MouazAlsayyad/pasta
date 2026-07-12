@@ -102,11 +102,17 @@ body {
   width: calc(min(65vw, 440px) * var(--fork-scale));
   height: calc(min(65vw, 440px) * var(--fork-scale));
   position: relative;
+  /* position: fixed;
+  bottom: 1rem;*/
+  left: 47%;
+  top:20%;
+  transform: translateX(-50%); 
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   flex-shrink: 0;
+  z-index: 999;
   margin-top: 2.5rem;
 }
 
@@ -163,6 +169,12 @@ body {
   width: 100%;
   aspect-ratio: 941 / 1141;
   position: relative;
+}
+
+.lb-rows {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .lb-row {
@@ -436,7 +448,7 @@ body {
   --z-tutorial: 15;
   --z-chef: 20;
   --z-bubble: 25;
-  --fork-scale: 1.35;
+  --fork-scale: 3;
   --chef-scale: 2;
 }
 

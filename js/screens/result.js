@@ -2,7 +2,6 @@ import { LeaderboardManager } from '../leaderboardManager.js';
 import { DialogueManager } from '../dialogueManager.js';
 
 export function createResultScreen(gameManager) {
-  const lbRows = document.querySelector('#screen-result .lb-rows');
   const scoreLabel = document.querySelector('#screen-result .score-value');
   const nameInput = document.querySelector('#screen-result .name-input');
   const saveBtn = document.querySelector('#screen-result .save-btn');
@@ -16,21 +15,6 @@ export function createResultScreen(gameManager) {
 
   const lb = new LeaderboardManager();
 
-  function renderLeaderboard() {
-    const scores = lb.getScores();
-    const ROW_TOPS = [12.36, 20.77, 29.18, 37.60, 45.93, 54.34, 62.49, 70.82, 78.61, 86.94];
-    lbRows.innerHTML = ROW_TOPS.map((top, i) => {
-      const entry = scores[i];
-      if (!entry) return '';
-      const name = document.createElement('div');
-      name.textContent = entry.name;
-      return `<div class="lb-row" style="top:${top}%;animation-delay:${i * 50}ms">
-        <span class="lb-name">${name.innerHTML}</span>
-        <span class="lb-score">${entry.score}</span>
-      </div>`;
-    }).join('');
-  }
-
   function goToAttract() {
     if (autoTimer) clearTimeout(autoTimer);
     saved = true;
@@ -43,7 +27,6 @@ export function createResultScreen(gameManager) {
       saved = false;
       scoreLabel.textContent = score;
       nameInput.value = '';
-      renderLeaderboard();
 
       const scores = lb.getScores();
       const topScore = scores[0]?.score || 0;
@@ -65,7 +48,6 @@ export function createResultScreen(gameManager) {
         if (saved) return;
         lb.addScore(nameInput.value || 'Player', currentScore);
         saved = true;
-        renderLeaderboard();
       };
 
       skipBtn.onclick = goToAttract;
