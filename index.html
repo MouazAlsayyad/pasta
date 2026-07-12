@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>لف أكثر! — Laf Akthar!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section id="screen-attract" class="screen">
+    <h1 class="attract-label">المس للبدء</h1>
+  </section>
+
+  <section id="screen-countdown" class="screen hidden">
+    <span class="countdown-number">3</span>
+  </section>
+
+  <div id="debug-overlay" class="debug-overlay">
+    <span>Wraps: <span id="debug-wraps">0</span></span>
+    <span>Fill: <span id="debug-fill">0</span></span>
+    <span>ω: <span id="debug-omega">0.00</span> rad/s</span>
+  </div>
+
+  <section id="screen-game" class="screen hidden">
+    <img src="assets/chef.png" alt="" class="chef">
+
+    <div class="leaderboard-panel">
+      <img src="assets/Leaderboard.png" alt="" class="leaderboard-header">
+      <ul class="leaderboard-list"></ul>
+    </div>
+
+    <div class="timer">
+      <img src="assets/time_box.png" alt="" class="timer-frame">
+      <span class="timer-value">10</span>
+    </div>
+
+    <div id="fork">
+      <img id="fork-img" src="assets/fork_fill_0.png" alt="">
+    </div>
+
+    <div class="score-panel">
+      <span class="score-label">النقاط</span>
+      <span class="score-value">0</span>
+    </div>
+  </section>
+
+  <section id="screen-result" class="screen hidden">
+    <img src="assets/chef.png" alt="" class="chef">
+
+    <div class="result-card">
+      <div class="leaderboard-section">
+        <img src="assets/Leaderboard.png" alt="" class="leaderboard-header">
+        <ul class="leaderboard-list"></ul>
+      </div>
+
+      <div class="score-display">
+        <span class="score-label">نقاطك</span>
+        <span class="score-value">0</span>
+      </div>
+
+      <input type="text" class="name-input" placeholder="اسمك" maxlength="10">
+
+      <div class="result-buttons">
+        <button class="save-btn">حفظ</button>
+        <button class="skip-btn">تخطي</button>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="js/gameManager.js"></script>
+</body>
+</html>
