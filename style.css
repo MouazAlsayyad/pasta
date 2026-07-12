@@ -74,7 +74,10 @@ body {
 }
 
 .timer {
-  position: relative;
+  position: fixed;
+  top: 1rem;
+  left: calc(1rem + clamp(100px, 15vh, 180px) + 0.75rem);
+  z-index: 100;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -96,13 +99,15 @@ body {
 
 #fork {
   touch-action: none;
-  width: min(60vw, 400px);
-  height: min(60vw, 400px);
+  width: calc(min(65vw, 440px) * var(--fork-scale));
+  height: calc(min(65vw, 440px) * var(--fork-scale));
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   flex-shrink: 0;
+  margin-top: 2.5rem;
 }
 
 #fork:active {
@@ -117,10 +122,15 @@ body {
 }
 
 .score-panel {
+  position: absolute;
+  top: -2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+  white-space: nowrap;
 }
 
 .score-panel .score-label {
@@ -220,13 +230,26 @@ body {
   }
 }
 
+/* --- Coil Guide --- */
+.coil-guide {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(80vw, 520px);
+  height: auto;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.35;
+}
+
 /* --- Chef --- */
 .chef {
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: var(--z-chef);
-  height: clamp(80px, 18vh, 180px);
+  height: calc(clamp(80px, 18vh, 180px) * var(--chef-scale));
   width: auto;
   pointer-events: none;
 }
@@ -331,12 +354,52 @@ body {
   100% { transform: scale(1); }
 }
 
+/* --- Speech Bubble --- */
+.speech-bubble {
+  position: fixed;
+  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) + 12px);
+  left: max(12px, calc(clamp(80px, 18vh, 180px) * var(--chef-scale) * 0.3));
+  z-index: var(--z-bubble);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+}
+
+.speech-bubble.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.speech-bubble-img {
+  width: clamp(140px, 28vw, 260px);
+  height: auto;
+  display: block;
+}
+
+.speech-bubble-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px 20px 16px;
+  font-size: clamp(0.75rem, 2.2vw, 1rem);
+  font-weight: 700;
+  color: #3a1a00;
+  text-align: center;
+  line-height: 1.3;
+  direction: rtl;
+}
+
 /* --- Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   .punch { animation: none; }
   .countdown-number,
   .save-btn,
-  .skip-btn { transition: none; }
+  .skip-btn,
+  .speech-bubble { transition: none; }
 }
 
 /* --- Touch hover guard --- */
@@ -345,10 +408,36 @@ body {
   .skip-btn:hover { background: rgba(255, 255, 255, 0.25); }
 }
 
+/* --- Arrow Guide --- */
+.arrow-guide {
+  position: fixed;
+  top: 65%;
+  left: 68%;
+  width: 180px;
+  height: auto;
+  pointer-events: none;
+  z-index: var(--z-tutorial);
+  opacity: 0;
+  transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  transform: translate(-50%, -50%) translateY(-60%);
+}
+
+.arrow-guide.visible {
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow-guide { transition: none; }
+}
+
 /* --- Z-index scale --- */
 :root {
   --z-screen: 10;
+  --z-tutorial: 15;
   --z-chef: 20;
+  --z-bubble: 25;
+  --fork-scale: 1.35;
+  --chef-scale: 1;
 }
 
 /* --- Brand palette --- */
