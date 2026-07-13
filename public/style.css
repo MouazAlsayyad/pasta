@@ -113,7 +113,7 @@ body {
   justify-content: center;
 
   cursor: grab;
-  z-index: 999;
+  z-index: 200;
 }
 
 #fork:active {
@@ -372,7 +372,7 @@ body {
 /* --- Speech Bubble --- */
 .speech-bubble {
   position: fixed;
-  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) - 120px);
+  bottom: calc(clamp(80px, 18vh, 180px) * var(--chef-scale) - 200px);
   left: max(12px, calc(clamp(80px, 18vh, 180px) * var(--chef-scale) * 0.6));
   z-index: var(--z-bubble);
   opacity: 0;
@@ -450,7 +450,7 @@ body {
   --z-screen: 10;
   --z-tutorial: 15;
   --z-chef: 20;
-  --z-bubble: 25;
+  --z-bubble: 225;
   --fork-scale: 3;
   --chef-scale: 2;
 }
