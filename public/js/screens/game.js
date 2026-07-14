@@ -3,6 +3,10 @@ import { ScoreSystem } from '../scoreSystem.js';
 import { LeaderboardManager } from '../leaderboardManager.js';
 import { DialogueManager } from '../dialogueManager.js';
 
+function preloadImages(sources) {
+  sources.forEach((src) => { const img = new Image(); img.src = src; });
+}
+
 export function createGameScreen(gameManager) {
   const forkEl = document.getElementById('fork');
   const forkImg = document.getElementById('fork-img');
@@ -26,6 +30,15 @@ export function createGameScreen(gameManager) {
 
   return {
     onShow() {
+      preloadImages([
+        'assets/fork_fill_1.png',
+        'assets/fork_fill_2.png',
+        'assets/fork_fill_3.png',
+        'assets/fork_fill_4.png',
+        'assets/fork_fill_5.png',
+        'assets/fork_fill_6.png',
+      ]);
+
       tutorialDone = false;
       lastCoilTime = 0;
       prevScore = 0;

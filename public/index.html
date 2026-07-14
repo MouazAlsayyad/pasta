@@ -16,6 +16,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/Logo.png">
   <link rel="stylesheet" href="style.css">
+  <link rel="preload" href="assets/bg.png" as="image">
+  <link rel="preload" href="assets/Logo.png" as="image">
+  <link rel="preload" href="assets/chef.png" as="image">
+  <link rel="preload" href="assets/chat.png" as="image">
+  <link rel="preload" href="assets/fork_fill_0.png" as="image">
 </head>
 <body>
 
@@ -90,6 +95,11 @@
     </div>
   </section>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
   <script type="module" src="js/gameManager.js"></script>
 </body>
 </html>

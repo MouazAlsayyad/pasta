@@ -12,7 +12,15 @@ if (!existsSync(DATA_FILE)) writeFileSync(DATA_FILE, '[]', 'utf-8');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(join(__dirname, 'public')));
+app.use(express.static(join(__dirname, 'public'), {
+  maxAge: '1y',
+  immutable: true,
+  setHeaders(res, path) {
+    if (path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  },
+}));
 
 app.get('/log', (_req, res) => {
   res.sendFile(join(__dirname, 'public', 'log.html'));

@@ -2,5 +2,19 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/log", "destination": "/log.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)\\.(png|jpg|jpeg|gif|svg|webp|ico)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/sw\\.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
   ]
 }
